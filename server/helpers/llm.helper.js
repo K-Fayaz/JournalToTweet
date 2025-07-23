@@ -6,7 +6,7 @@ const { sendJournalEmail } = require("./sendEmail.helper");
 
 // The client gets the API key from the environment variable `GEMINI_API_KEY`.
 const ai = new GoogleGenAI({
-    apiKey: "AIzaSyCMQA1PUu63TC0AMd628YT94C44Nb7qPCo"
+    apiKey: process.env.GEMINI_API_KEY
 });
 
 const journals = [
