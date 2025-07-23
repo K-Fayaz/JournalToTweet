@@ -19,15 +19,15 @@ const Footer = () => {
                 JournalToTweet
               </h3>
             </div>
-            
-            <div className="flex items-center space-x-6 text-gray-500 text-sm">
-              {/* <a href="#" className="hover:text-cyan-400 transition-colors">Privacy</a> */}
-              {/* <a href="#" className="hover:text-pink-400 transition-colors">Terms</a> */}
-              {/* <Link to="/pricing" className="hover:text-yellow-400 transition-colors">Pricing</Link> */}
-              {/* <a href="#" className="hover:text-yellow-400 transition-colors flex items-center space-x-1">
-                <Twitter className="w-4 h-4" />
-                <span>@journaltotweet</span>
-              </a> */}
+            {/* Right side links */}
+            <div className="flex items-center space-x-6 text-gray-400 text-sm">
+              <Link to="/legals?ref=privacy-policy" className="hover:text-cyan-400 transition-colors">
+                Privacy Policy
+              </Link>
+              <span className="text-gray-600">|</span>
+              <Link to="/legals?ref=terms-of-service" className="hover:text-pink-400 transition-colors">
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>

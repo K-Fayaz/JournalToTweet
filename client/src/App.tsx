@@ -8,6 +8,7 @@ import TweetSuggestions from './pages/TweetSuggestions';
 import PricingPage from './pages/PricingPage';
 import NotFound from './pages/NotFound';
 import EmailVerification from './pages/EmailVerification';
+import Legals from './pages/Legals';
 // import Garden from './pages/Garden';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/preferences" element={<Preferences />} />
         <Route path="/tweet-suggestions" element={<TweetSuggestions />} />
         <Route path="/email-verification" element={<EmailVerification />} />
+        <Route path="/legals" element={<Legals />} />
         {/* <Route path="/garden" element={<Garden />} /> */}
         <Route path="*" element={<NotFound />} />
       </Routes>
