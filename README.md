@@ -11,10 +11,7 @@ JournalToTweet is a web application that transforms your daily journal entries i
 
 ## Demo
 
-[▶️ Watch the demo video](client/src/assets/Demo-JTT.mp4)
-
-<!-- Optionally, add a screenshot below for visual context -->
-<!-- ![Demo Screenshot](client/src/assets/Demo-JTT.png) -->
+[![Watch the demo video on YouTube](https://img.youtube.com/vi/NmWikQROH2s/0.jpg)](https://youtu.be/NmWikQROH2s?si=K_NopnfHmWlL-PoH)
 
 ---
 
