@@ -15,7 +15,7 @@ https://user-images.githubusercontent.com/your-demo-link-here/demo.mp4
 
 Or, see the demo video below:
 
-<video src="client/src/assets/cursorful-video-1752135003587.mp4" controls width="600"></video>
+<video src="client/src/assets/Demo-JTT.mp4" controls width="600"></video>
 
 ---
 
