@@ -6,7 +6,7 @@ const React = require('react');
 const { render } = require('@react-email/render');
 const ConfirmationEmail = require("../emails/sendConfirmationEmail");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_EMAIL_API_KEY);
 
 function generateCode() {
   return Math.floor(1000 + Math.random() * 9000).toString();

@@ -4,6 +4,7 @@ require('./jobs/worker');
 
 const cors           = require("cors");
 const express        = require("express");
+const path           = require("path");
 
 const app = express();
 
@@ -34,6 +35,13 @@ app.use('/api/tweets',tweetRoutes);
 app.use("/auth/twitter",XAuthRoutes);
 app.use("/api/journal",journalRoutes);
 app.use('/api/preferences',preferencesRoutes);
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Handle React routing - send all non-API requests to React
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+});
 
 const PORT = process.env.PORT || 8081;
 
