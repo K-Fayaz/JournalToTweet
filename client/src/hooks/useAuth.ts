@@ -25,6 +25,8 @@ const useAuth = () => {
         'user_exists': 'An account with this X account already exists. Please log in.',
         'user_not_found': 'No account found for this X account. Please sign up first.',
         'oauth_failed': 'X login failed. Please try again.',
+        'login_failed': 'Google login failed. Please try again.',
+        'signup_failed': 'Google signup failed. Please try again.',
         // Add more mappings as needed
     };
 
@@ -32,11 +34,27 @@ const useAuth = () => {
         const params = new URLSearchParams(location.search);
         const status = params.get('status');
         const message = params.get('message');
+        const token = params.get('token');
+        const success = params.get('success');
+        const id = params.get('id');
+        const email = params.get('email');
+        
+        // Handle Google OAuth success callback
+        if (success === 'true' && token) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', id || '');
+            localStorage.setItem('email', email || '');
+            localStorage.setItem('isEmailVerified', 'true');
+            navigate('/journal');
+            return;
+        }
+        
+        // Handle error messages
         if (status === 'false' && message) {
             const friendly = errorMessageMap[message] || 'Login failed. Please try again.';
             setError(friendly);
         }
-    }, [location.search]);
+    }, [location.search, navigate]);
 
     const handleToggleMode = () => {
         setIsLogin(!isLogin);
@@ -121,27 +139,15 @@ const useAuth = () => {
     };
 
     const handleSocialLogin = () => {
-        console.log("is login: ", isLogin);
+        // console.log("is login: ", isLogin);
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
-        let url = `${BASE_URL}/auth/twitter/login`;
+        // Determine the correct endpoint based on login/signup mode
+        const endpoint = isLogin ? 'login' : `signup?timezone=${userTimezone}`;
+        let url = `${BASE_URL}/auth/google/${endpoint}`;
 
-        axios({
-            url,
-            method:"POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        .then((response) => {
-            console.log(response.data)
-            if (response.data.success) {
-                console.log(response.data.data.authUrl);
-                window.location.href = response.data.data.authUrl;
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        // For Google OAuth, we redirect directly to the Google auth URL
+        window.location.href = url;
     };
     
     return {

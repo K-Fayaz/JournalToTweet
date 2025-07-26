@@ -2,20 +2,25 @@ require("dotenv").config();
 require("./models/index");
 require('./jobs/worker');
 
+const path           = require("path");
 const cors           = require("cors");
 const express        = require("express");
-const path           = require("path");
+const passport       = require('passport');
+const jwt            = require('jsonwebtoken');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
 
 // Now add your body parsers for the rest of your app
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
 app.use(cors({
     origin: [
         "http://localhost:5173"
     ]
 }));
+
+app.use(express.json());
+app.use(passport.initialize());
+app.use(express.urlencoded({extended: true}));
 
 app.get('/api/healthcheck', (req,res) =>{
     res.json({ 
@@ -24,15 +29,37 @@ app.get('/api/healthcheck', (req,res) =>{
     });
 });
 
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback",
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+
+      let userData = {
+        email: profile.emails[0].value,
+        name: profile.displayName,
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
+      }
+      
+      return done(null, userData);
+    } catch (error) {
+      return done(error, null);
+    }
+}));
+
 const userRoutes = require("./routes/user.route");
 const tweetRoutes = require("./routes/tweet.router");
 const journalRoutes = require("./routes/journal.route");
 const preferencesRoutes = require("./routes/preferences.route");
 const XAuthRoutes = require("./routes/XAuth.router");
+const GoogleAuthRoutes = require("./routes/googleAuth.router");
 
 app.use("/api/auth",userRoutes);
 app.use('/api/tweets',tweetRoutes);
 app.use("/auth/twitter",XAuthRoutes);
+app.use("/auth/google", GoogleAuthRoutes);
 app.use("/api/journal",journalRoutes);
 app.use('/api/preferences',preferencesRoutes);
 
