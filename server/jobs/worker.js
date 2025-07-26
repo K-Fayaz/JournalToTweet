@@ -25,8 +25,9 @@ const worker = new Worker('tweet-suggestions', async job => {
                         .populate('tweets');
     if (!user) return;
 
-    // Use UTC for consistent date formatting across timezones
-    const today = DateTime.utc();
+    // Use user's timezone for date formatting
+    const userTimezone = user.timeZone || 'UTC';
+    const today = DateTime.now().setZone(userTimezone);
     const yyyy = today.toFormat('yyyy');
     const mm = today.toFormat('MM');
     const dd = today.toFormat('dd');
@@ -56,7 +57,7 @@ const worker = new Worker('tweet-suggestions', async job => {
 
     // Check if journal exists for today
     if (!journal) {
-        await sendJournalEmail("Nologs",user.name,user.email,[]);
+        await sendJournalEmail("Nologs",user.name,user.email,[], userTimezone);
         return;
     }
 
@@ -67,7 +68,7 @@ const worker = new Worker('tweet-suggestions', async job => {
     // Check if there are any journal entries
     if (journalEntries.length === 0) {
         console.log(`No journal entries found for ${user.email} on ${formattedDate}`);
-        await sendJournalEmail("Nologs",user.name,user.email,[]);
+        await sendJournalEmail("Nologs",user.name,user.email,[], userTimezone);
         return;
     }
 
@@ -115,7 +116,7 @@ const worker = new Worker('tweet-suggestions', async job => {
     console.log(tweets);
 
     // Send the email
-    await sendJournalEmail("suggest",user.name,user.email, tweets);
+    await sendJournalEmail("suggest",user.name,user.email, tweets, userTimezone);
 
     // Log for debugging
     console.log(`Triggering tweet suggestion for ${user.email} at ${new Date().toISOString()}`);

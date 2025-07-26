@@ -71,10 +71,14 @@ const useAuth = () => {
             }
             url = `${BASE_URL}/api/auth/login`;
         } else {
+            // Auto-detect timezone for new users
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+            
             payload = { 
                 name: formData.name,
                 email: formData.email,
-                password: formData.password
+                password: formData.password,
+                timeZone: userTimezone
             }
             url = `${BASE_URL}/api/auth/signup`;
         }

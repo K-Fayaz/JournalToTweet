@@ -13,10 +13,10 @@ function generateCode() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-async function sendJournalEmail(type,name,email, tweets) {
+async function sendJournalEmail(type,name,email, tweets, userTimezone = 'UTC') {
   try {
-    // Use UTC time for email timestamps since it's just for display
-    const today = DateTime.utc();
+    // Use user's timezone for email timestamps
+    const today = DateTime.now().setZone(userTimezone);
     const hh = today.toFormat('HH');
     const min = today.toFormat('mm');
     let time = `${hh}:${min}`;

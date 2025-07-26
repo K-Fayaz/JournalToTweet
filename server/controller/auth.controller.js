@@ -162,7 +162,12 @@ const XAuthCallback = async (req, res) => {
 
 const signUp = async (req,res)=>{
     try{
-        let { name, email, password } = req.body;
+        let { name, email, password, timeZone } = req.body;
+
+        // Log the received timezone
+        console.log('User signup - Detected timezone:', timeZone);
+        console.log('User signup - Email:', email);
+        console.log('User signup - Name:', name);
 
         // check if there is a user for this email
         let user = await User.findOne({email});
@@ -177,7 +182,12 @@ const signUp = async (req,res)=>{
         // Create User
         const salt = await bcrypt.genSalt(SALT_ROUNDS);
         const hashedPassword = await bcrypt.hash(password,salt);
-        const newUser = await User.create({ username:name, email:email , password:hashedPassword});
+        const newUser = await User.create({ 
+            username: name, 
+            email: email, 
+            password: hashedPassword,
+            timeZone: timeZone || 'UTC' // Store the detected timezone
+        });
 
         // Create Token
         let payload = { id: newUser._id };
