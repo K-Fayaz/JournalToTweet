@@ -32,7 +32,9 @@ app.get('/api/healthcheck', (req,res) =>{
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
     clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback",
+    callbackURL: process.env.NODE_ENV === 'production' 
+      ? "https://journaltotweet.com/auth/google/callback"
+      : "http://localhost:8081/auth/google/callback",
   }, async (accessToken, refreshToken, profile, done) => {
     try {
 
