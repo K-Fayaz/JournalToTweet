@@ -5,6 +5,7 @@ const NoNewLogsEmail = require("../emails/NoNewLogsEmail");
 const React = require('react');
 const { render } = require('@react-email/render');
 const ConfirmationEmail = require("../emails/sendConfirmationEmail");
+const { DateTime } = require("luxon");
 
 const resend = new Resend(process.env.RESEND_EMAIL_API_KEY);
 
@@ -14,17 +15,21 @@ function generateCode() {
 
 async function sendJournalEmail(type,name,email, tweets) {
   try {
-    const today = new Date();
-    const hh = String(today.getHours()).padStart(2,'0');
-    const min = String(today.getMinutes()).padStart(2,'0');
+    // Use UTC time for email timestamps since it's just for display
+    const today = DateTime.utc();
+    const hh = today.toFormat('HH');
+    const min = today.toFormat('mm');
     let time = `${hh}:${min}`;
 
 
     let emailHtml; 
     let subject;
     
-    if (type == "suggest") {
-      subject = `Your ${time} AM tweet ideas is ready`;
+         if (type == "suggest") {
+       // Determine AM/PM based on the hour
+       const hour = parseInt(hh);
+       const period = hour < 12 ? 'AM' : 'PM';
+       subject = `Your ${time} ${period} tweet ideas is ready`;
       emailHtml = await render(
           React.createElement(SuggestedTweetsEmail, {
             name,

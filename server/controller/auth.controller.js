@@ -50,7 +50,7 @@ const loginWithX = async (req, res) => {
       response_type: 'code',
       client_id: CLIENT_ID,
       redirect_uri: REDIRECT_URI,
-      scope: 'tweet.read users.read',
+      scope: 'tweet.read users.read offline.access',
       state: state,
       code_challenge: codeChallenge,
       code_challenge_method: 'S256'
@@ -97,6 +97,9 @@ const XAuthCallback = async (req, res) => {
       const userResponse = await axios.get('https://api.twitter.com/2/users/me', {
         headers: {
           'Authorization': `Bearer ${access_token}`
+        },
+        params: {
+          'user.fields': 'id,name,username,confirmed_email,profile_image_url,verified'
         }
       });
       

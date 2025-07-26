@@ -1,6 +1,7 @@
 const User    = require("../models/user.model");
 const Journal = require("../models/journal.model");
 const { getUser } = require("../helpers/getUser.helper");
+const { DateTime } = require("luxon");
 
 
 const AddJournal = async (req,res) => {
@@ -10,10 +11,12 @@ const AddJournal = async (req,res) => {
 
         let journal = user.journals.find(journal => journal.date === req.body.date);
 
-        let now = new Date();
-        let hours = now.getHours().toString().padStart(2, '0');
-        let minutes = now.getMinutes().toString().padStart(2, '0');
-        let currentTime = `${hours}:${minutes}`;
+        // Get user's timezone and calculate time in their timezone
+        const userTimezone = user.timeZone || 'UTC';
+        const now = DateTime.now().setZone(userTimezone);
+        
+        // Format time in user's timezone
+        let currentTime = now.toFormat('HH:mm');
 
         let newEntry = {
             time: currentTime,

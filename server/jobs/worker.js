@@ -4,6 +4,7 @@ const { sendJournalEmail } = require('../helpers/sendEmail.helper');
 const { generateTweetPrompt } = require("../helpers/prompt.hepler");
 const { callGemini } = require("../helpers/llm.helper");
 const TweetSuggestion = require("../models/tweetSuggestion.model");
+const { DateTime } = require("luxon");
 
 // Helper to compare "HH:mm" times
 function isTimeInWindow(entryTime, prevSlot, currentSlot) {
@@ -24,10 +25,11 @@ const worker = new Worker('tweet-suggestions', async job => {
                         .populate('tweets');
     if (!user) return;
 
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const dd = String(today.getDate()).padStart(2, '0');
+    // Use UTC for consistent date formatting across timezones
+    const today = DateTime.utc();
+    const yyyy = today.toFormat('yyyy');
+    const mm = today.toFormat('MM');
+    const dd = today.toFormat('dd');
     const formattedDate = `${yyyy}-${mm}-${dd}`;
 
     console.log("time slots: ", time);
