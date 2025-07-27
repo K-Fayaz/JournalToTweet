@@ -11,17 +11,17 @@ const callBack = async (req,res) => {
   if (state === 'login') {
     const result = await loginUser(userDetails);
     if (result.success) {
-      return res.redirect(`${CLIENT_REDIRECT_URL}/login?status=true&token=${result.token}&id=${result.id}&email=${result.email}&success=true`);
+      return res.redirect(`${client_url}/login?status=true&token=${result.token}&id=${result.id}&email=${result.email}&success=true`);
     } else {
-      return res.redirect(`${CLIENT_REDIRECT_URL}/login?status=false&message=${result.message}`);
+      return res.redirect(`${client_url}/login?status=false&message=${result.message}`);
     } 
   }
   else {
     const result = await signupUser(userDetails,state);
     if (result.success) {
-      return res.redirect(`${CLIENT_REDIRECT_URL}/login?status=true&token=${result.token}&id=${result.id}&email=${result.email}&success=true`);
+      return res.redirect(`${client_url}/login?status=true&token=${result.token}&id=${result.id}&email=${result.email}&success=true`);
     } else {
-      return res.redirect(`${CLIENT_REDIRECT_URL}/login?status=false&message=${result.message}`);
+      return res.redirect(`${client_url}/login?status=false&message=${result.message}`);
     }
   }
 }
