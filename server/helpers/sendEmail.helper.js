@@ -73,7 +73,7 @@ async function sendConfirmationEmail(email) {
     const message = {
       from: process.env.RESEND_VERIFIEND_EMAIL || 'hello@fayazz.xyz',
       to: email,
-      subject: 'Your loremapis.com Confirmation Code',
+      subject: 'Your journaltotweet.com Confirmation Code',
       html // use the rendered HTML
     }
 

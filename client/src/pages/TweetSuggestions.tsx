@@ -19,10 +19,12 @@ import {
   Check,
   Bot,
   Send,
-  X
+  X,
+  Menu
 } from 'lucide-react';
 
 import useTweetSuggestions from '../hooks/useTweetSuggestions';
+import { useState } from 'react';
 
 interface TweetEntry {
   _id: string;
@@ -38,6 +40,7 @@ interface TweetsByTime {
 }
 
 function TweetSuggestions() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const {
     navigate,
@@ -87,14 +90,14 @@ function TweetSuggestions() {
       }
 
       return (
-        <div key={timeSlot} className="mb-12">
+        <div key={timeSlot} className="mb-8 lg:mb-12">
           {/* Time Slot Separator */}
-          <div className="flex items-center mb-8">
+          <div className="flex items-center mb-6 lg:mb-8">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-600 to-gray-600"></div>
-            <div className="px-6 py-2 bg-gray-800 border border-gray-600 rounded-full">
+            <div className="px-4 lg:px-6 py-2 bg-gray-800 border border-gray-600 rounded-full">
               <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-cyan-400" />
-                <span className="text-cyan-400 font-mono font-medium">
+                <Clock className="w-3 h-3 lg:w-4 lg:h-4 text-cyan-400" />
+                <span className="text-xs lg:text-sm text-cyan-400 font-mono font-medium">
                   {separatorLabel}
                 </span>
               </div>
@@ -103,12 +106,12 @@ function TweetSuggestions() {
           </div>
 
           {/* Tweets for this time slot */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {tweets.map((tweet: TweetEntry) => (
               <div key={tweet._id} className="bg-gray-900 border border-gray-700 rounded-lg hover:border-gray-600 transition-colors">
-                <div className="p-6">
+                <div className="p-4 lg:p-6">
                   {/* Header */}
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start mb-3 lg:mb-4">
                     <div className="flex items-center space-x-3">
                       {/* <span className="text-xs text-gray-400">Journal Entry</span>
                       {'date' in tweet && (
@@ -126,33 +129,33 @@ function TweetSuggestions() {
                           className="p-1 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400"
                           onClick={() => setMenuOpenId(menuOpenId === tweet._id ? null : tweet._id)}
                         >
-                          <MoreVertical className="w-5 h-5 text-gray-400" />
+                          <MoreVertical className="w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
                         </button>
                         {menuOpenId === tweet._id && (
-                          <div className="absolute right-0 mt-2 w-40 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30">
+                          <div className="absolute right-0 mt-2 w-32 lg:w-40 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30">
                             <button
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-t-lg"
+                              className="flex items-center w-full px-3 lg:px-4 py-2 text-xs lg:text-sm text-gray-200 hover:bg-gray-700 rounded-t-lg"
                               onClick={() => { handleEditTweet(tweet._id, tweet.content); setMenuOpenId(null); }}
                             >
-                              <Edit3 className="w-4 h-4 mr-2" /> Edit
+                              <Edit3 className="w-3 h-3 lg:w-4 lg:h-4 mr-2" /> Edit
                             </button>
                             <button
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                              className="flex items-center w-full px-3 lg:px-4 py-2 text-xs lg:text-sm text-gray-200 hover:bg-gray-700"
                               onClick={() => { handleCopyTweet(tweet.content, tweet._id); setMenuOpenId(null); }}
                             >
-                              <Copy className="w-4 h-4 mr-2" /> Copy
+                              <Copy className="w-3 h-3 lg:w-4 lg:h-4 mr-2" /> Copy
                             </button>
                             <button
-                              className="flex items-center w-full px-4 py-2 text-sm text-purple-400 hover:bg-gray-700 rounded-b-lg"
+                              className="flex items-center w-full px-3 lg:px-4 py-2 text-xs lg:text-sm text-purple-400 hover:bg-gray-700 rounded-b-lg"
                               onClick={() => { handleAiEdit(tweet._id); setMenuOpenId(null); }}
                             >
-                              <Bot className="w-4 h-4 mr-2" /> Edit with AI
+                              <Bot className="w-3 h-3 lg:w-4 lg:h-4 mr-2" /> Edit with AI
                             </button>
                             <button
-                              className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700 rounded-b-lg"
+                              className="flex items-center w-full px-3 lg:px-4 py-2 text-xs lg:text-sm text-red-400 hover:bg-gray-700 rounded-b-lg"
                               onClick={() => handleDeleteTweet(tweet._id)}
                             >
-                              <Trash2 className="w-4 h-4 mr-2" /> Delete
+                              <Trash2 className="w-3 h-3 lg:w-4 lg:h-4 mr-2" /> Delete
                             </button>
                           </div>
                         )}
@@ -161,33 +164,33 @@ function TweetSuggestions() {
                   </div>
 
                   {/* Tweet Content */}
-                  <div className="mb-6">
-                    <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
+                  <div className="mb-4 lg:mb-6">
+                    <div className="bg-gray-800 border border-gray-600 rounded-lg p-3 lg:p-4">
                       {editingTweetId === tweet._id ? (
-                        <div className="space-y-4">
+                        <div className="space-y-3 lg:space-y-4">
                           <textarea
                             value={editingContent}
                             onChange={(e) => setEditingContent(e.target.value)}
-                            className="w-full h-32 p-3 bg-gray-700 border border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-gray-400 leading-relaxed"
+                            className="w-full h-24 lg:h-32 p-3 bg-gray-700 border border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-gray-400 leading-relaxed text-sm lg:text-base"
                             placeholder="Edit your tweet..."
                           />
                           <div className="flex justify-end space-x-2">
                             <button
                               onClick={handleCancelEdit}
-                              className="px-4 py-2 text-sm bg-gray-600 text-gray-300 rounded-md hover:bg-gray-500 transition-colors"
+                              className="px-3 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm bg-gray-600 text-gray-300 rounded-md hover:bg-gray-500 transition-colors"
                             >
                               Cancel
                             </button>
                             <button
                               onClick={() => handleSaveEdit(tweet._id)}
-                              className="px-4 py-2 text-sm bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition-colors"
+                              className="px-3 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition-colors"
                             >
                               Save Changes
                             </button>
                           </div>
                         </div>
                       ) : (
-                        <p className="text-white leading-relaxed whitespace-pre-line">
+                        <p className="text-white leading-relaxed whitespace-pre-line text-sm lg:text-base">
                           {tweet.content}
                         </p>
                       )}
@@ -196,31 +199,31 @@ function TweetSuggestions() {
 
                   {/* AI Edit Section */}
                   {aiEditingTweetId === tweet._id && (
-                    <div className="mb-6 bg-gray-800 border border-purple-500/30 rounded-lg p-4">
-                      <div className="flex items-center space-x-2 mb-3">
-                        <Bot className="w-4 h-4 text-purple-400" />
-                        <span className="text-sm font-medium text-purple-400">Edit with AI</span>
+                    <div className="mb-4 lg:mb-6 bg-gray-800 border border-purple-500/30 rounded-lg p-3 lg:p-4">
+                      <div className="flex items-center space-x-2 mb-2 lg:mb-3">
+                        <Bot className="w-3 h-3 lg:w-4 lg:h-4 text-purple-400" />
+                        <span className="text-xs lg:text-sm font-medium text-purple-400">Edit with AI</span>
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2 lg:space-y-3">
                         <textarea
                           value={aiEditPrompt}
                           onChange={(e) => setAiEditPrompt(e.target.value)}
                           placeholder="Tell AI how to modify this tweet... (e.g., 'Make it more casual', 'Add more technical details', 'Shorten it')"
-                          className="w-full h-20 p-3 bg-gray-700 border border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 text-sm"
+                          className="w-full h-16 lg:h-20 p-3 bg-gray-700 border border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 text-xs lg:text-sm"
                         />
                         <div className="flex justify-end space-x-2">
                           <button
                             onClick={handleCancelAiEdit}
-                            className="px-3 py-1.5 text-sm bg-gray-600 text-gray-300 rounded-md hover:bg-gray-500 transition-colors"
+                            className="px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm bg-gray-600 text-gray-300 rounded-md hover:bg-gray-500 transition-colors"
                           >
                             Cancel
                           </button>
                           <button
                             onClick={() => handleAiEditSubmit(tweet._id)}
                             disabled={!aiEditPrompt.trim()}
-                            className="px-3 py-1.5 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center space-x-1"
+                            className="px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center space-x-1"
                           >
-                            <Send className="w-3 h-3" />
+                            <Send className="w-2 h-2 lg:w-3 lg:h-3" />
                             <span>Apply AI Edit</span>
                           </button>
                         </div>
@@ -236,9 +239,9 @@ function TweetSuggestions() {
                           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet.content)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center px-3 py-1.5 text-sm bg-cyan-600 rounded hover:scale-105 transition-transform"
+                          className="inline-flex items-center px-2 lg:px-3 py-1 lg:py-1.5 text-xs lg:text-sm bg-cyan-600 rounded hover:scale-105 transition-transform"
                         >
-                          <ExternalLink className="w-4 h-4 mr-2" />
+                          <ExternalLink className="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2" />
                           <span>Post to X</span>
                         </a>
                       </div>
@@ -255,89 +258,112 @@ function TweetSuggestions() {
 
   return (
     <div className="min-h-screen bg-black text-white flex">
-      {/* Fixed Sidebar */}
-      <div className="w-64 bg-gray-900 border-r border-gray-700 fixed left-0 top-0 h-full flex flex-col">
-        <div className="p-6 flex-1">
-          <div className="flex items-center mb-8">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-              <img src={icon} alt="Logo" className="w-12 h-12" />
+      {/* Sidebar Toggle Button - Fixed at top */}
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-600"
+        aria-label="Open sidebar"
+      >
+        <Menu className="w-5 h-5 text-gray-400" />
+      </button>
+
+      {/* Overlay Sidebar */}
+      {sidebarOpen && (
+        <>
+          {/* Sidebar */}
+          <div className="fixed left-0 top-0 h-full w-70 bg-gray-900 border-r border-gray-700 z-50 flex flex-col">
+            <div className="p-6 flex-1">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                    <img src={icon} alt="Logo" className="w-12 h-12" />
+                  </div>
+                  <span className="text-xl font-black text-cyan-600 font-mono ml-3">
+                    JournalToTweet
+                  </span>
+                </div>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                  aria-label="Close sidebar"
+                >
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+              
+              <nav className="space-y-2">
+                <button
+                  onClick={() => navigate('/journal')}
+                  className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+                >
+                  <CalendarIcon className="w-5 h-5" />
+                  <span className="font-medium">Journals</span>
+                </button>
+                
+                <div className="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-pink-500/20 text-pink-400 border border-pink-500/30">
+                  <Twitter className="w-5 h-5" />
+                  <span className="font-medium">Tweet Suggestions</span>
+                </div>
+                
+                <button
+                  onClick={() => navigate('/preferences')}
+                  className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+                >
+                  <Settings className="w-5 h-5" />
+                  <span className="font-medium">Preferences</span>
+                </button>
+
+                {/* <button
+                  onClick={() => navigate('/garden')}
+                  className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+                >
+                  <TreePineIcon className="w-5 h-5" />
+                  <span className="font-medium">Tweet Garden</span>
+                </button> */}
+              </nav>
             </div>
-            <span className="text-xl font-black text-cyan-600 font-mono">
-              JournalToTweet
-            </span>
+            <div className="flex justify-start items-center mb-6 pl-6">
+              <button
+                onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
+                className="p-0 bg-transparent border-none hover:bg-transparent hover:text-red-600 transition-colors"
+                style={{ boxShadow: 'none' }}
+                aria-label="Logout"
+              >
+                <LogOut className="w-6 h-6 text-gray-400 hover:text-red-600 transition-colors" />
+              </button>
+            </div>
           </div>
-          
-          <nav className="space-y-2">
-            <button
-              onClick={() => navigate('/journal')}
-              className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-            >
-              <CalendarIcon className="w-5 h-5" />
-              <span className="font-medium">Journals</span>
-            </button>
-            
-            <div className="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-pink-500/20 text-pink-400 border border-pink-500/30">
-              <Twitter className="w-5 h-5" />
-              <span className="font-medium">Tweet Suggestions</span>
-            </div>
-            
-            <button
-              onClick={() => navigate('/preferences')}
-              className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-            >
-              <Settings className="w-5 h-5" />
-              <span className="font-medium">Preferences</span>
-            </button>
+        </>
+      )}
 
-            {/* <button
-              onClick={() => navigate('/garden')}
-              className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-            >
-              <TreePineIcon className="w-5 h-5" />
-              <span className="font-medium">Tweet Garden</span>
-            </button> */}
-          </nav>
-        </div>
-        <div className="flex justify-start items-center mb-6 pl-6">
-          <button
-            onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
-            className="p-0 bg-transparent border-none hover:bg-transparent hover:text-red-600 transition-colors"
-            style={{ boxShadow: 'none' }}
-            aria-label="Logout"
-          >
-            <LogOut className="w-6 h-6 text-gray-400 hover:text-red-600 transition-colors" />
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content with left margin to account for fixed sidebar */}
-      <div className="flex-1 ml-64 h-screen overflow-y-auto">
-        <div className="p-8">
+      {/* Main Content - Full width when sidebar is closed */}
+      <div className="flex-1 h-screen overflow-y-auto">
+        <div className="p-4 lg:p-8">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white mb-2">Tweet Suggestions</h1>
-              <p className="text-gray-400">
+            <div className="mb-6 lg:mb-8">
+              <h1 className="text-lg lg:text-3xl font-bold text-white mb-2 text-center mt-5 lg:mt-0 lg:text-start">Tweet Suggestions</h1>
+              <p className="text-xs lg:text-base text-gray-400 text-center lg:text-start">
                 AI-generated content based on your journal entries and trending topics
               </p>
             </div>
 
             {/* Tabs */}
-            <div className="mb-8">
+            <div className="mb-6 lg:mb-8">
               <div className="border-b border-gray-700">
-                <nav className="-mb-px flex space-x-8">
+                <nav className="-mb-px flex space-x-6 lg:space-x-8">
                   <button
                     onClick={() => setActiveTab('journal')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    className={`py-3 lg:py-4 px-1 border-b-2 font-medium text-xs lg:text-sm transition-colors ${
                       activeTab === 'journal'
                         ? 'border-cyan-500 text-cyan-400'
                         : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
                     }`}
                   >
                     <div className="flex items-center space-x-2">
-                      <MessageSquare className="w-4 h-4" />
+                      <MessageSquare className="w-3 h-3 lg:w-4 lg:h-4" />
                       <span>From My Journal</span>
-                      <span className="bg-cyan-500/20 text-cyan-400 py-0.5 px-2 rounded-full text-xs border border-cyan-500/30">
+                      <span className="bg-cyan-500/20 text-cyan-400 py-0.5 px-1.5 lg:px-2 rounded-full text-xs border border-cyan-500/30">
                         {todayJournalTotal}
                       </span>
                     </div>
@@ -347,20 +373,20 @@ function TweetSuggestions() {
             </div>
 
             {/* Time Slots Info */}
-            <div className="mb-8 bg-gray-900 border border-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between">
+            <div className="mb-6 lg:mb-8 bg-gray-900 border border-gray-700 rounded-lg p-4">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
                 <div className="flex items-center space-x-3">
-                  <Clock className="w-5 h-5 text-purple-400" />
+                  <Clock className="w-4 h-4 lg:w-5 lg:h-5 text-purple-400" />
                   <div>
-                    <h3 className="text-sm font-medium text-white">Today's Schedule</h3>
+                    <h3 className="text-xs lg:text-sm font-medium text-white">Today's Schedule</h3>
                     <p className="text-xs text-gray-400">Tweets generated at your preferred times</p>
                   </div>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex flex-wrap gap-2 lg:space-x-2">
                   {userTimeSlots.map((time) => (
                     <span
                       key={time}
-                      className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-mono border border-purple-500/30"
+                      className="px-2 py-1 lg:px-3 lg:py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-mono border border-purple-500/30"
                     >
                       {time}
                     </span>
@@ -370,10 +396,10 @@ function TweetSuggestions() {
             </div>
 
             {/* Today's Tweets by Time Slot */}
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+            <div className="mb-6 lg:mb-8">
+              <h2 className="text-lg lg:text-xl font-bold text-white mb-4 lg:mb-6 flex flex-col lg:flex-row lg:items-center space-y-1 lg:space-y-0 lg:space-x-2">
                 <span>Today's Suggestions</span>
-                <span className="text-sm text-gray-400 font-normal">
+                <span className="text-xs lg:text-sm text-gray-400 font-normal">
                   ({currentTotalTweets} tweets)
                 </span>
               </h2>
@@ -382,18 +408,18 @@ function TweetSuggestions() {
 
             {/* Load Previous Days Button */}
             {!showPreviousDays && (
-              <div className="text-center py-8 mb-8">
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
-                  <h3 className="text-lg font-medium text-white mb-2">Load Previous Days</h3>
-                  <p className="text-gray-400 text-sm mb-4">
+              <div className="text-center py-6 lg:py-8 mb-6 lg:mb-8">
+                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 lg:p-6">
+                  <h3 className="text-base lg:text-lg font-medium text-white mb-2">Load Previous Days</h3>
+                  <p className="text-gray-400 text-xs lg:text-sm mb-4">
                     View tweet suggestions from previous days
                   </p>
                   <button
                     onClick={handleLoadPrevious}
-                    className="flex items-center space-x-2 px-6 py-3 bg-gray-800 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors mx-auto"
+                    className="flex items-center space-x-2 px-4 py-2 lg:px-6 lg:py-3 bg-gray-800 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors mx-auto text-sm lg:text-base"
                     disabled={loadingPrevious}
                   >
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-3 h-3 lg:w-4 lg:h-4" />
                     <span>{loadingPrevious ? 'Loading...' : 'Load Previous Suggestions'}</span>
                   </button>
                 </div>
@@ -402,34 +428,34 @@ function TweetSuggestions() {
 
             {/* Previous Days Tweets */}
             {showPreviousDays && (
-              <div className="mb-8">
-                <h2 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+              <div className="mb-6 lg:mb-8">
+                <h2 className="text-lg lg:text-xl font-bold text-white mb-4 lg:mb-6 flex flex-col lg:flex-row lg:items-center space-y-1 lg:space-y-0 lg:space-x-2">
                   <span>Previous Days</span>
-                  <span className="text-sm text-gray-400 font-normal">
+                  <span className="text-xs lg:text-sm text-gray-400 font-normal">
                     (Historical suggestions)
                   </span>
                 </h2>
                 {loadingPrevious && (
-                  <div className="text-center text-gray-400 mb-4">Loading...</div>
+                  <div className="text-center text-gray-400 mb-4 text-sm lg:text-base">Loading...</div>
                 )}
                 {(!previousTweetsByTime || previousTweetsByTime.length === 0) && !loadingPrevious ? (
-                  <div className="text-center text-gray-500">No previous tweets loaded yet.</div>
+                  <div className="text-center text-gray-500 text-sm lg:text-base">No previous tweets loaded yet.</div>
                 ) : (
                   <>
                     {Array.isArray(previousTweetsByTime) ? previousTweetsByTime.map((day: { date: string, tweetsByTime: any }) => (
-                      <div key={day.date} className="mb-12">
+                      <div key={day.date} className="mb-8 lg:mb-12">
                         {/* Date label removed, handled in separator */}
                         {renderTweetsByTimeSlot(day.tweetsByTime, false, day.date)}
                       </div>
                     )) : null}
                     {/* Button to load more previous days */}
-                    <div className="text-center mt-6">
+                    <div className="text-center mt-4 lg:mt-6">
                       <button
                         onClick={handleLoadPrevious}
-                        className="flex items-center space-x-2 px-6 py-3 bg-gray-800 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors mx-auto"
+                        className="flex items-center space-x-2 px-4 py-2 lg:px-6 lg:py-3 bg-gray-800 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors mx-auto text-sm lg:text-base"
                         disabled={loadingPrevious}
                       >
-                        <ChevronDown className="w-4 h-4" />
+                        <ChevronDown className="w-3 h-3 lg:w-4 lg:h-4" />
                         <span>{loadingPrevious ? 'Loading...' : 'Load More Previous Suggestions'}</span>
                       </button>
                     </div>
