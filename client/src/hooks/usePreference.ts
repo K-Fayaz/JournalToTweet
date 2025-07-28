@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 import BASE_URL from '../config';
 import axios from 'axios';
+import { useToast } from '../contexts/ToastContext';
 
 const usePreference = () => {
     const navigate = useNavigate();
+    const { showToast } = useToast();
   
     // Custom prompt state
     const [defaultPrompt, setDefaultPrompt] = useState('');
@@ -23,6 +25,7 @@ const usePreference = () => {
     const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
     const [lockedTimeSlots, setLockedTimeSlots] = useState<string[]>([]);
     const [userTimeZone, setUserTimeZone] = useState<string>('UTC');
+    const [isSaving, setIsSaving] = useState(false);
 
     // Available tones
     const availableTones = [
@@ -62,6 +65,7 @@ const usePreference = () => {
     };
 
     const handleSave = () => {
+        setIsSaving(true);
         let url = `${BASE_URL}/api/preferences/update`;
 
         axios({
@@ -78,10 +82,15 @@ const usePreference = () => {
         })
         .then((response) => {
             console.log(response);
+            showToast('Preferences saved successfully!', 'success');
         })
         .catch((err) => {
             console.log(err);
+            showToast('Failed to save preferences. Please try again.', 'error');
         })
+        .finally(() => {
+            setIsSaving(false);
+        });
     };
 
     useEffect(() => {
@@ -176,7 +185,7 @@ const usePreference = () => {
         selectedTimeSlots,
         selectedTones,
         lockedTimeSlots,
-
+        isSaving,
     }
 };
 

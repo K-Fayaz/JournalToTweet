@@ -32,25 +32,85 @@ function Preferences() {
     availableTones,
     selectedTimeSlots,
     selectedTones,
-    lockedTimeSlots,    
+    lockedTimeSlots,
+    isSaving,
   } = usePreference();
 
   return (
     <div className="min-h-screen bg-black text-white flex">
-      {/* Sidebar Toggle Button - Fixed at top */}
+      {/* Sidebar Toggle Button - Only visible on mobile */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-600"
+        className="fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-600 lg:hidden"
         aria-label="Open sidebar"
       >
         <Menu className="w-5 h-5 text-gray-400" />
       </button>
 
-      {/* Overlay Sidebar */}
+      {/* Desktop Sidebar - Always visible on lg screens and above */}
+      <div className="hidden lg:flex lg:w-70 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
+        <div className="flex-1 flex flex-col min-h-0 bg-gray-900 border-r border-gray-700">
+          <div className="p-6 flex-1">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <img src={icon} alt="Logo" className="w-12 h-12" />
+                </div>
+                <span className="text-xl font-black text-cyan-600 font-mono ml-3">
+                  JournalToTweet
+                </span>
+              </div>
+            </div>
+            
+            <nav className="space-y-2">
+              <button
+                onClick={() => navigate('/journal')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <CalendarIcon className="w-5 h-5" />
+                <span className="font-medium">Journals</span>
+              </button>
+              
+              <button
+                onClick={() => navigate('/tweet-suggestions')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <Twitter className="w-5 h-5" />
+                <span className="font-medium">Tweet Suggestions</span>
+              </button>
+              
+              <div className="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                <Settings className="w-5 h-5" />
+                <span className="font-medium">Preferences</span>
+              </div>
+
+              {/* <button
+                onClick={() => navigate('/garden')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <TreePineIcon className="w-5 h-5" />
+                <span className="font-medium">Tweet Garden</span>
+              </button> */}
+            </nav>
+          </div>
+          <div className="flex justify-start items-center mb-6 pl-6">
+            <button
+              onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
+              className="p-0 bg-transparent border-none hover:bg-transparent hover:text-red-600 transition-colors"
+              style={{ boxShadow: 'none' }}
+              aria-label="Logout"
+            >
+              <LogOut className="w-6 h-6 text-gray-400 hover:text-red-600 transition-colors" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Overlay Sidebar */}
       {sidebarOpen && (
         <>
           {/* Sidebar */}
-          <div className="fixed left-0 top-0 h-full w-70 bg-gray-900 border-r border-gray-700 z-50 flex flex-col">
+          <div className="fixed left-0 top-0 h-full w-70 bg-gray-900 border-r border-gray-700 z-50 flex flex-col lg:hidden">
             <div className="p-6 flex-1">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
@@ -115,8 +175,8 @@ function Preferences() {
         </>
       )}
 
-      {/* Main Content - Full width when sidebar is closed */}
-      <div className="flex-1 h-screen overflow-y-auto">
+      {/* Main Content - Full width on mobile, offset on desktop */}
+      <div className="flex-1 h-screen overflow-y-auto lg:ml-70">
         <div className="p-4 lg:p-8">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
@@ -323,10 +383,18 @@ function Preferences() {
 
                 <button
                   onClick={handleSave}
-                  className="flex items-center justify-center space-x-2 px-6 lg:px-8 py-2 lg:py-3 bg-cyan-600 text-white rounded font-medium hover:scale-105 transition-transform shadow-lg text-sm lg:text-base"
+                  disabled={isSaving}
+                  className="flex items-center justify-center space-x-2 px-6 lg:px-8 py-2 lg:py-3 bg-cyan-600 text-white rounded font-medium hover:scale-105 transition-transform shadow-lg text-sm lg:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  <Save className="w-3 h-3 lg:w-4 lg:h-4" />
-                  <span>Save Preferences</span>
+                  {isSaving ? (
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : (
+                    <Save className="w-3 h-3 lg:w-4 lg:h-4" />
+                  )}
+                  <span>{isSaving ? 'Saving...' : 'Save Preferences'}</span>
                 </button>
               </div>
 

@@ -29,7 +29,7 @@ async function sendJournalEmail(type,name,email, tweets, userTimezone = 'UTC') {
        // Determine AM/PM based on the hour
        const hour = parseInt(hh);
        const period = hour < 12 ? 'AM' : 'PM';
-       subject = `Your ${time} ${period} tweet ideas is ready`;
+       subject = `Your ${time} ${period} tweet ideas is ready!`;
       emailHtml = await render(
           React.createElement(SuggestedTweetsEmail, {
             name,
@@ -73,7 +73,7 @@ async function sendConfirmationEmail(email) {
     const message = {
       from: process.env.RESEND_VERIFIEND_EMAIL || 'hello@fayazz.xyz',
       to: email,
-      subject: 'Your journaltotweet.com Confirmation Code',
+      subject: 'Your journaltotweet.com Confirmation Code.',
       html // use the rendered HTML
     }
 

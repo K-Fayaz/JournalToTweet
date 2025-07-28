@@ -32,6 +32,7 @@ function JournalView() {
     menuOpenId,
     editId,
     editContent,
+    isSubmitting,
     isToday,
     handleJournalSubmit,
     journals,
@@ -43,20 +44,82 @@ function JournalView() {
 
   return (
     <div className="min-h-screen bg-black text-white flex">
-      {/* Sidebar Toggle Button - Fixed at top */}
+      {/* Sidebar Toggle Button - Only visible on mobile */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-600"
+        className="fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-600 lg:hidden"
         aria-label="Open sidebar"
       >
         <Menu className="w-5 h-5 text-gray-400" />
       </button>
 
-      {/* Overlay Sidebar */}
+      {/* Desktop Sidebar - Always visible on lg screens and above */}
+      <div className="hidden lg:flex lg:w-70 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
+        <div className="flex-1 flex flex-col min-h-0 bg-gray-900 border-r border-gray-700">
+          <div className="p-6 flex-1">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <img src={icon} alt="Logo" className="w-12 h-12" />
+                </div>
+                <span className="text-xl font-black text-cyan-600 font-mono ml-3">
+                  JournalToTweet
+                </span>
+              </div>
+            </div>
+            
+            <nav className="space-y-2">
+              <button
+                onClick={() => navigate('/journal')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30 transition-colors"
+              >
+                <CalendarIcon className="w-5 h-5" />
+                <span className="font-medium">Journals</span>
+              </button>
+              
+              <button
+                onClick={() => navigate('/tweet-suggestions')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <Twitter className="w-5 h-5" />
+                <span className="font-medium">Tweet Suggestions</span>
+              </button>
+              
+              <button
+                onClick={() => navigate('/preferences')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                <span className="font-medium">Preferences</span>
+              </button>
+
+              {/* <button
+                onClick={() => navigate('/garden')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <TreePineIcon className="w-5 h-5" />
+                <span className="font-medium">Tweet Garden</span>
+              </button> */}
+            </nav>
+          </div>
+          <div className="flex justify-start items-center mb-6 pl-6">
+            <button
+              onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
+              className="p-0 bg-transparent border-none hover:bg-transparent hover:text-red-600 transition-colors"
+              style={{ boxShadow: 'none' }}
+              aria-label="Logout"
+            >
+              <LogOut className="w-6 h-6 text-gray-400 hover:text-red-600 transition-colors" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Overlay Sidebar */}
       {sidebarOpen && (
         <>
           {/* Sidebar */}
-          <div className="fixed left-0 top-0 h-full w-70 bg-gray-900 border-r border-gray-700 z-50 flex flex-col">
+          <div className="fixed left-0 top-0 h-full w-70 bg-gray-900 border-r border-gray-700 z-50 flex flex-col lg:hidden">
             <div className="p-6 flex-1">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
@@ -124,8 +187,8 @@ function JournalView() {
         </>
       )}
 
-      {/* Main Content - Full width when sidebar is closed */}
-      <div className="flex-1 h-screen overflow-y-auto">
+      {/* Main Content - Full width on mobile, offset on desktop */}
+      <div className="flex-1 h-screen overflow-y-auto lg:ml-70">
         <div className="p-4 sm:p-6 lg:p-8">
           <div className="max-w-5xl mx-auto">
             {/* Header */}
@@ -240,7 +303,7 @@ function JournalView() {
                 )}
 
                 {/* Empty state for today with no entries */}
-                {journals.length === 0 && (
+                {journals.length === 0 && !isSubmitting && (
                   <div className="text-center py-6 sm:py-8 mb-6 sm:mb-8">
                     {
                       isToday() ? <div>
@@ -258,7 +321,31 @@ function JournalView() {
                   </div>
                 )}
 
-                
+                {/* Skeleton Loading State */}
+                {isSubmitting && (
+                  <div className="relative group">
+                    {/* Timeline dot and connecting line */}
+                    <div className="absolute left-0 top-0 flex flex-col items-center">
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 bg-cyan-400 rounded-full border-4 border-gray-900 shadow-lg z-10"></div>
+                      {journals.length > 0 && (
+                        <div className="w-0.5 h-20 sm:h-24 bg-gradient-to-b from-cyan-400 to-gray-600 mt-2"></div>
+                      )}
+                    </div>
+
+                    {/* Skeleton content */}
+                    <div className="ml-6 sm:ml-8">
+                      <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gray-600 rounded animate-pulse"></div>
+                        <div className="w-16 h-3 sm:w-20 sm:h-4 bg-gray-600 rounded animate-pulse"></div>
+                      </div>
+                      <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6 shadow-lg relative">
+                        <div className="space-y-3">
+                          <div className="w-full h-4 bg-gray-700 rounded animate-pulse"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Add new entry for today - ALWAYS SHOW THIS FOR TODAY */}
                 {isToday() && (
@@ -289,7 +376,8 @@ function JournalView() {
                           value={journalEntry}
                           onChange={(e) => setJournalEntry(e.target.value)}
                           placeholder="What's on your mind? Share your thoughts, progress, challenges, or insights from today..."
-                          className="w-full h-32 sm:h-40 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-white placeholder-gray-400 leading-relaxed text-sm sm:text-base"
+                          disabled={isSubmitting}
+                          className="w-full h-32 sm:h-40 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-white placeholder-gray-400 leading-relaxed text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <div className="flex justify-between items-center">
                           <span className="text-xs text-gray-500 font-mono">
@@ -297,11 +385,11 @@ function JournalView() {
                           </span>
                           <button
                             type="submit"
-                            disabled={!journalEntry.trim()}
+                            disabled={!journalEntry.trim() || isSubmitting}
                             className="flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-cyan-600 rounded font-medium hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm sm:text-base"
                           >
                             <Send className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>Save Entry</span>
+                            <span>{isSubmitting ? 'Saving...' : 'Save Entry'}</span>
                           </button>
                         </div>
                       </form>

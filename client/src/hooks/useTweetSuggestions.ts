@@ -26,6 +26,8 @@ const useTweetSuggestions = () => {
     const [editingContent, setEditingContent] = useState('');
     const [aiEditingTweetId, setAiEditingTweetId] = useState<string | null>(null);
     const [aiEditPrompt, setAiEditPrompt] = useState('');
+    const [isAiEditing, setIsAiEditing] = useState(false);
+    const [isLoadingTweets, setIsLoadingTweets] = useState(true);
     const [todaysJournalTweets, setTodaysJournalTweets] = useState<TweetsByTime>({});
     const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
     const [previousDayOffset, setPreviousDayOffset] = useState(1);
@@ -40,6 +42,7 @@ const useTweetSuggestions = () => {
         const dd = String(today.getDate()).padStart(2, '0');
         const formattedDate = `${yyyy}-${mm}-${dd}`;
     
+        setIsLoadingTweets(true);
         let url = `${BASE_URL}/api/tweets/get?date=${formattedDate}`;
     
         axios({
@@ -58,6 +61,9 @@ const useTweetSuggestions = () => {
             navigate('/login');
           }
         })
+        .finally(() => {
+          setIsLoadingTweets(false);
+        });
     }, []);
     
       // Mock time slots from preferences (would come from backend)
@@ -181,6 +187,7 @@ const useTweetSuggestions = () => {
         // Here you would send the AI edit request to backend
         console.log('AI editing tweet:', tweetId, 'with prompt:', aiEditPrompt);
     
+        setIsAiEditing(true);
         let date = getEditingTweetDate(tweetId);
         console.log(date);
     
@@ -210,6 +217,7 @@ const useTweetSuggestions = () => {
         .finally(() => {
           setAiEditingTweetId(null);
           setAiEditPrompt('');
+          setIsAiEditing(false);
         })
     };
     
@@ -314,6 +322,8 @@ const useTweetSuggestions = () => {
         editingContent,
         editingTweetId,
         aiEditingTweetId,
+        isAiEditing,
+        isLoadingTweets,
         menuOpenId,
         setMenuOpenId,
         userTimeSlots,

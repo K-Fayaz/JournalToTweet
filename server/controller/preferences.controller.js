@@ -16,10 +16,11 @@ async function scheduleUserJobs(user) {
     for (const slot of user.timeSlots) {
         console.log("slot update  : ", slot);
         const [hour, minute] = slot.split(':');
-        // Convert to UTC
+        // Convert to UTC using user's timezone
+        const userTimezone = user.timeZone || 'UTC';
         const utc = DateTime.fromObject(
             { hour: +hour, minute: +minute },
-            { zone: "Asia/Kolkata" }
+            { zone: userTimezone }
         ).toUTC();
 
         // Schedule a repeatable job

@@ -24,20 +24,79 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white flex">
-      {/* Sidebar Toggle Button - Fixed at top */}
+      {/* Sidebar Toggle Button - Only visible on mobile */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-600"
+        className="fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors border border-gray-600 lg:hidden"
         aria-label="Open sidebar"
       >
         <Menu className="w-5 h-5 text-gray-400" />
       </button>
 
-      {/* Overlay Sidebar */}
+      {/* Desktop Sidebar - Always visible on lg screens and above */}
+      <div className="hidden lg:flex lg:w-70 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
+        <div className="flex-1 flex flex-col min-h-0 bg-gray-900 border-r border-gray-700">
+          <div className="p-6 flex-1">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <img src={icon} alt="Logo" className="w-12 h-12" />
+                </div>
+                <span className="text-xl font-black text-cyan-600 font-mono ml-3">
+                  JournalToTweet
+                </span>
+              </div>
+            </div>
+            
+            <nav className="space-y-2">
+              <div className="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                <CalendarIcon className="w-5 h-5" />
+                <span className="font-medium">Journals</span>
+              </div>
+              
+              <button
+                onClick={() => navigate('/tweet-suggestions')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <Twitter className="w-5 h-5" />
+                <span className="font-medium">Tweet Suggestions</span>
+              </button>
+              
+              <button
+                onClick={() => navigate('/preferences')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                <span className="font-medium">Preferences</span>
+              </button>
+
+              {/* <button
+                onClick={() => navigate('/garden')}
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              >
+                <TreePineIcon className="w-5 h-5" />
+                <span className="font-medium">Tweet Garden</span>
+              </button> */}
+            </nav>
+          </div>
+          <div className="flex justify-start items-center mb-6 pl-6">
+            <button
+              onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
+              className="p-0 bg-transparent border-none hover:bg-transparent hover:text-red-600 transition-colors"
+              style={{ boxShadow: 'none' }}
+              aria-label="Logout"
+            >
+              <LogOut className="w-6 h-6 text-gray-400 hover:text-red-600 transition-colors" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Overlay Sidebar */}
       {sidebarOpen && (
         <>
           {/* Sidebar */}
-          <div className="fixed left-0 top-0 h-full w-70 bg-gray-900 border-r border-gray-700 z-50 flex flex-col">
+          <div className="fixed left-0 top-0 h-full w-70 bg-gray-900 border-r border-gray-700 z-50 flex flex-col lg:hidden">
             <div className="p-6 flex-1">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
@@ -102,8 +161,8 @@ function Dashboard() {
         </>
       )}
 
-      {/* Main Content - Full width when sidebar is closed */}
-      <div className="flex-1 p-4 lg:p-8">
+      {/* Main Content - Full width on mobile, offset on desktop */}
+      <div className="flex-1 p-4 lg:p-8 lg:ml-70">
         <div className="max-w-4xl mx-auto">
           {/* Calendar Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 lg:mb-8 text-center lg:text-left">

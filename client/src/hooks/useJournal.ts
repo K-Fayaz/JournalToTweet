@@ -18,6 +18,7 @@ const useJournal = () => {
     const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
     const [editId, setEditId] = useState<string | null>(null);
     const [editContent, setEditContent] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     // Parse the date from URL
     const selectedDate = date ? new Date(date) : new Date();
     
@@ -47,6 +48,7 @@ const useJournal = () => {
         e.preventDefault();
         if (!journalEntry.trim()) return;
     
+        setIsSubmitting(true);
         let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         const id = Date.now().toString();
         
@@ -85,8 +87,10 @@ const useJournal = () => {
             navigate('/login');
         }
         })
-
-        setJournalEntry('');
+        .finally(() => {
+            setIsSubmitting(false);
+            setJournalEntry('');
+        });
     };
 
     useEffect(() => {
@@ -179,6 +183,7 @@ const useJournal = () => {
         menuOpenId,
         editId,
         editContent,
+        isSubmitting,
         isToday,
         isPastDate,
         getJournalsForDate,
