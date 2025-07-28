@@ -34,6 +34,7 @@ const useTweetSuggestions = () => {
     const [previousDaysJournalTweetsByTime, setPreviousDaysJournalTweetsByTime] = useState<Array<{ date: string, tweetsByTime: TweetsByTime }>>([]);
     const [loadingPrevious, setLoadingPrevious] = useState(false);
     const [previousDaysTrendingTweetsByTime, setPreviousDaysTrendingTweetsByTime] = useState<Array<{ date: string, tweetsByTime: TweetsByTime }>>([]);
+    const [userTimeSlots, setUserTimeSlots] = useState<string[]>([]);
 
     useEffect(() => {
         const today = new Date();
@@ -53,6 +54,7 @@ const useTweetSuggestions = () => {
         })
         .then((response) => {
           console.log(response.data);
+          setUserTimeSlots(response?.data?.slots || []);
           setTodaysJournalTweets(response?.data?.data || {});
         })
         .catch((err) => {
@@ -67,7 +69,7 @@ const useTweetSuggestions = () => {
     }, []);
     
       // Mock time slots from preferences (would come from backend)
-    const userTimeSlots = ['09:00', '13:00', '17:00'];
+    // const userTimeSlots = ['09:00', '13:00', '17:00'];
     
       // Real journal-based tweets organized by time slots from backend
     const todayJournalTweetsByTime = todaysJournalTweets;

@@ -9,6 +9,7 @@ const getTweetSuggestions = async (req, res) => {
         const { date } = req.query;
         const jwtPayload = getUser(req.headers);
         let user = await User.findById(jwtPayload.id).populate('tweets');
+        let userTimeSlots = user.timeSlots;
         
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -36,7 +37,8 @@ const getTweetSuggestions = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: tweetsByTime
+            data: tweetsByTime,
+            slots: userTimeSlots
         });
     } catch (error) {
         console.error('Error getting tweet suggestions:', error);
